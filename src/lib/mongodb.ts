@@ -3,7 +3,7 @@
 import mongoose from 'mongoose';
 
 // استفاده مستقیم از لینک MongoDB
-const MONGODB_URI = 'mongodb+srv://Reza:Dark.tnt09@rezashop.pxkdr5j.mongodb.net/Shop';
+const MONGODB_URI = ;
 
 interface MongooseCache {
   conn: typeof mongoose | null;
