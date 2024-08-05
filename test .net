@@ -78,10 +78,12 @@ namespace Customer.Business
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
 
+                    conn.Open();
                     using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
                     {
                         adapter.Fill(result);
                     }
+                    conn.Close();
                 }
             }
 
@@ -99,10 +101,12 @@ namespace Customer.Business
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@CustomerID", customerId);
 
+                    conn.Open();
                     using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
                     {
                         adapter.Fill(result);
                     }
+                    conn.Close();
                 }
             }
 
@@ -120,6 +124,7 @@ namespace Customer.Business
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@FirstName", firstName);
 
+                    conn.Open();
                     using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
                     {
                         DataSet result = new DataSet();
@@ -141,6 +146,127 @@ namespace Customer.Business
                             }
                         }
                     }
+                    conn.Close();
+                }
+            }
+
+            return finalResult;
+        }
+
+        public List<vmCustomer> SearchCustomersByLastName(string lastName)
+        {
+            List<vmCustomer> finalResult = new List<vmCustomer>();
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("SearchCustomersByLastName", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@LastName", lastName);
+
+                    conn.Open();
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+                    {
+                        DataSet result = new DataSet();
+                        adapter.Fill(result);
+
+                        if (result.Tables.Count > 0)
+                        {
+                            foreach (DataRow row in result.Tables[0].Rows)
+                            {
+                                vmCustomer customer = new vmCustomer
+                                {
+                                    CustomerID = Convert.ToInt32(row["CustomerID"]),
+                                    FirstName = row["FirstName"].ToString(),
+                                    LastName = row["LastName"].ToString(),
+                                    PhoneNumber = row["PhoneNumber"].ToString(),
+                                    Email = row["Email"].ToString()
+                                };
+                                finalResult.Add(customer);
+                            }
+                        }
+                    }
+                    conn.Close();
+                }
+            }
+
+            return finalResult;
+        }
+
+        public List<vmCustomer> SearchCustomersByPhoneNumber(string phoneNumber)
+        {
+            List<vmCustomer> finalResult = new List<vmCustomer>();
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("SearchCustomersByPhoneNumber", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@PhoneNumber", phoneNumber);
+
+                    conn.Open();
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+                    {
+                        DataSet result = new DataSet();
+                        adapter.Fill(result);
+
+                        if (result.Tables.Count > 0)
+                        {
+                            foreach (DataRow row in result.Tables[0].Rows)
+                            {
+                                vmCustomer customer = new vmCustomer
+                                {
+                                    CustomerID = Convert.ToInt32(row["CustomerID"]),
+                                    FirstName = row["FirstName"].ToString(),
+                                    LastName = row["LastName"].ToString(),
+                                    PhoneNumber = row["PhoneNumber"].ToString(),
+                                    Email = row["Email"].ToString()
+                                };
+                                finalResult.Add(customer);
+                            }
+                        }
+                    }
+                    conn.Close();
+                }
+            }
+
+            return finalResult;
+        }
+
+        public List<vmCustomer> SearchCustomersByEmail(string email)
+        {
+            List<vmCustomer> finalResult = new List<vmCustomer>();
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("SearchCustomersByEmail", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Email", email);
+
+                    conn.Open();
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+                    {
+                        DataSet result = new DataSet();
+                        adapter.Fill(result);
+
+                        if (result.Tables.Count > 0)
+                        {
+                            foreach (DataRow row in result.Tables[0].Rows)
+                            {
+                                vmCustomer customer = new vmCustomer
+                                {
+                                    CustomerID = Convert.ToInt32(row["CustomerID"]),
+                                    FirstName = row["FirstName"].ToString(),
+                                    LastName = row["LastName"].ToString(),
+                                    PhoneNumber = row["PhoneNumber"].ToString(),
+                                    Email = row["Email"].ToString()
+                                };
+                                finalResult.Add(customer);
+                            }
+                        }
+                    }
+                    conn.Close();
                 }
             }
 
