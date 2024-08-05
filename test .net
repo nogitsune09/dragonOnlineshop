@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using Customer.ViewModel;
 
 namespace Customer.Business
 {
@@ -66,13 +68,33 @@ namespace Customer.Business
             return "OK";
         }
 
-        public DataSet GetCustomerById(int customerId)
+        public DataSet GetAllCustomers()
         {
             DataSet result = new DataSet();
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                using (SqlCommand cmd = new SqlCommand("GetCustomerById", conn))
+                using (SqlCommand cmd = new SqlCommand("GetAllCustomers", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+                    {
+                        adapter.Fill(result);
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public DataSet GetCustomerByID(int customerId)
+        {
+            DataSet result = new DataSet();
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("GetCustomerByID", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@CustomerID", customerId);
@@ -85,6 +107,44 @@ namespace Customer.Business
             }
 
             return result;
+        }
+
+        public List<vmCustomer> SearchCustomersByFirstName(string firstName)
+        {
+            List<vmCustomer> finalResult = new List<vmCustomer>();
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("SearchCustomersByFirstName", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@FirstName", firstName);
+
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+                    {
+                        DataSet result = new DataSet();
+                        adapter.Fill(result);
+
+                        if (result.Tables.Count > 0)
+                        {
+                            foreach (DataRow row in result.Tables[0].Rows)
+                            {
+                                vmCustomer customer = new vmCustomer
+                                {
+                                    CustomerID = Convert.ToInt32(row["CustomerID"]),
+                                    FirstName = row["FirstName"].ToString(),
+                                    LastName = row["LastName"].ToString(),
+                                    PhoneNumber = row["PhoneNumber"].ToString(),
+                                    Email = row["Email"].ToString()
+                                };
+                                finalResult.Add(customer);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return finalResult;
         }
     }
 }
