@@ -127,22 +127,22 @@ namespace Customer.Business
                     conn.Open();
                     using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
                     {
-                        DataSet result = new DataSet();
-                        adapter.Fill(result);
+                        DataSet dsResult = new DataSet();
+                        adapter.Fill(dsResult);
 
-                        if (result.Tables.Count > 0)
+                        if (dsResult.Tables.Count > 0)
                         {
-                            foreach (DataRow row in result.Tables[0].Rows)
+                            for (int i = 0; i < dsResult.Tables[0].Rows.Count; i++)
                             {
-                                vmCustomer customer = new vmCustomer
+                                vmCustomer result = new vmCustomer
                                 {
-                                    CustomerID = Convert.ToInt32(row["CustomerID"]),
-                                    FirstName = row["FirstName"].ToString(),
-                                    LastName = row["LastName"].ToString(),
-                                    PhoneNumber = row["PhoneNumber"].ToString(),
-                                    Email = row["Email"].ToString()
+                                    CustomerID = Convert.ToInt32(dsResult.Tables[0].Rows[i]["CustomerID"]),
+                                    FirstName = dsResult.Tables[0].Rows[i]["FirstName"].ToString(),
+                                    LastName = dsResult.Tables[0].Rows[i]["LastName"].ToString(),
+                                    PhoneNumber = dsResult.Tables[0].Rows[i]["PhoneNumber"].ToString(),
+                                    Email = dsResult.Tables[0].Rows[i]["Email"].ToString()
                                 };
-                                finalResult.Add(customer);
+                                finalResult.Add(result);
                             }
                         }
                     }
@@ -167,22 +167,22 @@ namespace Customer.Business
                     conn.Open();
                     using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
                     {
-                        DataSet result = new DataSet();
-                        adapter.Fill(result);
+                        DataSet dsResult = new DataSet();
+                        adapter.Fill(dsResult);
 
-                        if (result.Tables.Count > 0)
+                        if (dsResult.Tables.Count > 0)
                         {
-                            foreach (DataRow row in result.Tables[0].Rows)
+                            for (int i = 0; i < dsResult.Tables[0].Rows.Count; i++)
                             {
-                                vmCustomer customer = new vmCustomer
+                                vmCustomer result = new vmCustomer
                                 {
-                                    CustomerID = Convert.ToInt32(row["CustomerID"]),
-                                    FirstName = row["FirstName"].ToString(),
-                                    LastName = row["LastName"].ToString(),
-                                    PhoneNumber = row["PhoneNumber"].ToString(),
-                                    Email = row["Email"].ToString()
+                                    CustomerID = Convert.ToInt32(dsResult.Tables[0].Rows[i]["CustomerID"]),
+                                    FirstName = dsResult.Tables[0].Rows[i]["FirstName"].ToString(),
+                                    LastName = dsResult.Tables[0].Rows[i]["LastName"].ToString(),
+                                    PhoneNumber = dsResult.Tables[0].Rows[i]["PhoneNumber"].ToString(),
+                                    Email = dsResult.Tables[0].Rows[i]["Email"].ToString()
                                 };
-                                finalResult.Add(customer);
+                                finalResult.Add(result);
                             }
                         }
                     }
@@ -207,22 +207,22 @@ namespace Customer.Business
                     conn.Open();
                     using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
                     {
-                        DataSet result = new DataSet();
-                        adapter.Fill(result);
+                        DataSet dsResult = new DataSet();
+                        adapter.Fill(dsResult);
 
-                        if (result.Tables.Count > 0)
+                        if (dsResult.Tables.Count > 0)
                         {
-                            foreach (DataRow row in result.Tables[0].Rows)
+                            for (int i = 0; i < dsResult.Tables[0].Rows.Count; i++)
                             {
-                                vmCustomer customer = new vmCustomer
+                                vmCustomer result = new vmCustomer
                                 {
-                                    CustomerID = Convert.ToInt32(row["CustomerID"]),
-                                    FirstName = row["FirstName"].ToString(),
-                                    LastName = row["LastName"].ToString(),
-                                    PhoneNumber = row["PhoneNumber"].ToString(),
-                                    Email = row["Email"].ToString()
+                                    CustomerID = Convert.ToInt32(dsResult.Tables[0].Rows[i]["CustomerID"]),
+                                    FirstName = dsResult.Tables[0].Rows[i]["FirstName"].ToString(),
+                                    LastName = dsResult.Tables[0].Rows[i]["LastName"].ToString(),
+                                    PhoneNumber = dsResult.Tables[0].Rows[i]["PhoneNumber"].ToString(),
+                                    Email = dsResult.Tables[0].Rows[i]["Email"].ToString()
                                 };
-                                finalResult.Add(customer);
+                                finalResult.Add(result);
                             }
                         }
                     }
@@ -247,22 +247,22 @@ namespace Customer.Business
                     conn.Open();
                     using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
                     {
-                        DataSet result = new DataSet();
-                        adapter.Fill(result);
+                        DataSet dsResult = new DataSet();
+                        adapter.Fill(dsResult);
 
-                        if (result.Tables.Count > 0)
+                        if (dsResult.Tables.Count > 0)
                         {
-                            foreach (DataRow row in result.Tables[0].Rows)
+                            for (int i = 0; i < dsResult.Tables[0].Rows.Count; i++)
                             {
-                                vmCustomer customer = new vmCustomer
+                                vmCustomer result = new vmCustomer
                                 {
-                                    CustomerID = Convert.ToInt32(row["CustomerID"]),
-                                    FirstName = row["FirstName"].ToString(),
-                                    LastName = row["LastName"].ToString(),
-                                    PhoneNumber = row["PhoneNumber"].ToString(),
-                                    Email = row["Email"].ToString()
+                                    CustomerID = Convert.ToInt32(dsResult.Tables[0].Rows[i]["CustomerID"]),
+                                    FirstName = dsResult.Tables[0].Rows[i]["FirstName"].ToString(),
+                                    LastName = dsResult.Tables[0].Rows[i]["LastName"].ToString(),
+                                    PhoneNumber = dsResult.Tables[0].Rows[i]["PhoneNumber"].ToString(),
+                                    Email = dsResult.Tables[0].Rows[i]["Email"].ToString()
                                 };
-                                finalResult.Add(customer);
+                                finalResult.Add(result);
                             }
                         }
                     }
