@@ -5,42 +5,59 @@
     max-width: 500px;
     margin: 20px auto;
     padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
 }
 
 .form-card h2 {
     text-align: center;
     margin-bottom: 20px;
+    font-size: 2em;
+    color: #333;
 }
 
 .form-card label {
     display: block;
     margin-bottom: 8px;
     font-weight: bold;
+    color: #555;
 }
 
 .form-card input {
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    transition: border-color 0.3s ease;
+}
+
+.form-card input:focus {
+    border-color: #007bff;
+    outline: none;
 }
 
 .form-card button {
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     background-color: #007bff;
     color: #fff;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .form-card button:hover {
     background-color: #0056b3;
+    transform: translateY(-2px);
 }
 
 /* مدیا کوئری برای ریسپانسیو کردن فرم */
@@ -54,11 +71,11 @@
     }
 
     .form-card input {
-        padding: 8px;
+        padding: 10px;
     }
 
     .form-card button {
-        padding: 8px;
+        padding: 10px;
     }
 }
 
@@ -72,10 +89,10 @@
     }
 
     .form-card input {
-        padding: 6px;
+        padding: 8px;
     }
 
     .form-card button {
-        padding: 6px;
+        padding: 8px;
     }
 }
