@@ -1,15 +1,53 @@
+using Microsoft.AspNetCore.Mvc;
+using Customer.Business;
+using Customer.ViewModel;
 
- public class Program
- {
-     public static void Main(string[] args)
-     {
-         CreateHostBuilder(args).Build().Run();
-     }
+namespace Customer.Controllers
+{
+    [Route("api/[controller]/[action]")]
+    [ApiController]
+    public class CustomerController : ControllerBase
+    {
+        private readonly CustomerBusiness _customerBusiness;
 
-     public static IHostBuilder CreateHostBuilder(string[] args) =>
-         Host.CreateDefaultBuilder(args)
-             .ConfigureWebHostDefaults(webBuilder =>
-             {
-                 webBuilder.UseStartup<Startup>();
-             });
- }
+        public CustomerController()
+        {
+            _customerBusiness = new CustomerBusiness();
+        }
+
+        [HttpPost]
+        public IActionResult InsertCustomer([FromBody] vmCustomer customer)
+        {
+            var result = _customerBusiness.InsertCustomer(customer);
+            if (result == "OK")
+            {
+                return Ok("Customer inserted successfully.");
+            }
+            return BadRequest(result);
+        }
+
+        [HttpPut("update")]
+        public IActionResult UpdateCustomer([FromBody] vmCustomer customer)
+        {
+            var result = _customerBusiness.UpdateCustomer(customer);
+            if (result == "OK")
+            {
+                return Ok("Customer updated successfully.");
+            }
+            return BadRequest(result);
+        }
+
+        [HttpDelete("delete/{id}")]
+        public IActionResult DeleteCustomer(int id)
+        {
+            var result = _customerBusiness.DeleteCustomer(id);
+            if (result == "OK")
+            {
+                return Ok("Customer deleted successfully.");
+            }
+            return BadRequest(result);
+        }
+
+        // سایر اکشن‌ها به همان صورت قبلی باقی می‌مانند.
+    }
+}
