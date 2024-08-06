@@ -1,91 +1,95 @@
-using System;
+using Microsoft.AspNetCore.Mvc;
+using Customer.Business;
+using Customer.ViewModel;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
-using Customer.ViewModel;
 
-namespace Customer.Business
+namespace Customer.Controllers
 {
-    public class CustomerBusiness
+    [Route("api/[controller]")]
+    [ApiController]
+    public class CustomerController : ControllerBase
     {
-        private string connectionString = "your_connection_string_here";
+        private readonly CustomerBusiness _customerBusiness;
 
-        public string InsertCustomer(string firstName, string lastName, string phoneNumber, string email)
+        public CustomerController()
         {
-            try
-            {
-                using (SqlConnection sql = new SqlConnection(connectionString))
-                {
-                    sql.Open();
-                    SqlCommand sqlCmd = sql.CreateCommand();
-                    sqlCmd.CommandType = CommandType.StoredProcedure;
-                    sqlCmd.CommandText = "InsertCustomer";
-                    sqlCmd.Parameters.AddWithValue("@FirstName", firstName);
-                    sqlCmd.Parameters.AddWithValue("@LastName", lastName);
-                    sqlCmd.Parameters.AddWithValue("@PhoneNumber", phoneNumber);
-                    sqlCmd.Parameters.AddWithValue("@Email", email);
-
-                    sqlCmd.ExecuteNonQuery();
-                    sql.Close();
-                }
-                return "OK";
-            }
-            catch (Exception ex)
-            {
-                return $"Error: {ex.Message}";
-            }
+            _customerBusiness = new CustomerBusiness();
         }
 
-        public string UpdateCustomer(int customerId, string firstName, string lastName, string phoneNumber, string email)
+        [HttpPost("insert")]
+        public IActionResult InsertCustomer([FromBody] vmCustomer customer)
         {
-            try
+            var result = _customerBusiness.InsertCustomer(customer.FirstName, customer.LastName, customer.PhoneNumber, customer.Email);
+            if (result == "OK")
             {
-                using (SqlConnection sql = new SqlConnection(connectionString))
-                {
-                    sql.Open();
-                    SqlCommand sqlCmd = sql.CreateCommand();
-                    sqlCmd.CommandType = CommandType.StoredProcedure;
-                    sqlCmd.CommandText = "UpdateCustomer";
-                    sqlCmd.Parameters.AddWithValue("@CustomerID", customerId);
-                    sqlCmd.Parameters.AddWithValue("@FirstName", firstName);
-                    sqlCmd.Parameters.AddWithValue("@LastName", lastName);
-                    sqlCmd.Parameters.AddWithValue("@PhoneNumber", phoneNumber);
-                    sqlCmd.Parameters.AddWithValue("@Email", email);
-
-                    sqlCmd.ExecuteNonQuery();
-                    sql.Close();
-                }
-                return "OK";
+                return Ok("Customer inserted successfully.");
             }
-            catch (Exception ex)
-            {
-                return $"Error: {ex.Message}";
-            }
+            return BadRequest(result);
         }
 
-        public string DeleteCustomer(int customerId)
+        [HttpPut("update")]
+        public IActionResult UpdateCustomer([FromBody] vmCustomer customer)
         {
-            try
+            var result = _customerBusiness.UpdateCustomer(customer.CustomerID, customer.FirstName, customer.LastName, customer.PhoneNumber, customer.Email);
+            if (result == "OK")
             {
-                using (SqlConnection sql = new SqlConnection(connectionString))
-                {
-                    sql.Open();
-                    SqlCommand sqlCmd = sql.CreateCommand();
-                    sqlCmd.CommandType = CommandType.StoredProcedure;
-                    sqlCmd.CommandText = "DeleteCustomer";
-                    sqlCmd.Parameters.AddWithValue("@CustomerID", customerId);
-
-                    sqlCmd.ExecuteNonQuery();
-                    sql.Close();
-                }
-                return "OK";
+                return Ok("Customer updated successfully.");
             }
-            catch (Exception ex)
-            {
-                return $"Error: {ex.Message}";
-            }
+            return BadRequest(result);
         }
 
-        // سایر متدها مانند GetAllCustomers، GetCustomerByID و متدهای جستجو به همان صورت قبلی باقی می‌مانند.
+        [HttpDelete("delete/{id}")]
+        public IActionResult DeleteCustomer(int id)
+        {
+            var result = _customerBusiness.DeleteCustomer(id);
+            if (result == "OK")
+            {
+                return Ok("Customer deleted successfully.");
+            }
+            return BadRequest(result);
+        }
+
+        [HttpGet("all")]
+        public IActionResult GetAllCustomers()
+        {
+            DataSet customers = _customerBusiness.GetAllCustomers();
+            return Ok(customers);
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult GetCustomerByID(int id)
+        {
+            DataSet customer = _customerBusiness.GetCustomerByID(id);
+            return Ok(customer);
+        }
+
+        [HttpGet("search/firstname/{firstName}")]
+        public IActionResult SearchCustomersByFirstName(string firstName)
+        {
+            List<vmCustomer> customers = _customerBusiness.SearchCustomersByFirstName(firstName);
+            return Ok(customers);
+        }
+
+        [HttpGet("search/lastname/{lastName}")]
+        public IActionResult SearchCustomersByLastName(string lastName)
+        {
+            List<vmCustomer> customers = _customerBusiness.SearchCustomersByLastName(lastName);
+            return Ok(customers);
+        }
+
+        [HttpGet("search/phonenumber/{phoneNumber}")]
+        public IActionResult SearchCustomersByPhoneNumber(string phoneNumber)
+        {
+            List<vmCustomer> customers = _customerBusiness.SearchCustomersByPhoneNumber(phoneNumber);
+            return Ok(customers);
+        }
+
+        [HttpGet("search/email/{email}")]
+        public IActionResult SearchCustomersByEmail(string email)
+        {
+            List<vmCustomer> customers = _customerBusiness.SearchCustomersByEmail(email);
+            return Ok(customers);
+        }
     }
 }
