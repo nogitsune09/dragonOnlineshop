@@ -1,95 +1,53 @@
-using Microsoft.AspNetCore.Mvc;
-using Customer.Business;
-using Customer.ViewModel;
-using System.Collections.Generic;
-using System.Data;
+import React, { useState } from 'react';
+import axios from 'axios';
 
-namespace Customer.Controllers
-{
-    [Route("api/[controller]")]
-    [ApiController]
-    public class CustomerController : ControllerBase
-    {
-        private readonly CustomerBusiness _customerBusiness;
+const InsertCustomerForm = () => {
+    const [customer, setCustomer] = useState({
+        firstName: '',
+        lastName: '',
+        phoneNumber: '',
+        email: ''
+    });
 
-        public CustomerController()
-        {
-            _customerBusiness = new CustomerBusiness();
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setCustomer({
+            ...customer,
+            [name]: value
+        });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await axios.post('http://localhost:5000/api/customer/insert', customer);
+            alert(response.data);
+        } catch (error) {
+            console.error('There was an error inserting the customer!', error);
         }
+    };
 
-        [HttpPost("insert")]
-        public IActionResult InsertCustomer([FromBody] vmCustomer customer)
-        {
-            var result = _customerBusiness.InsertCustomer(customer.FirstName, customer.LastName, customer.PhoneNumber, customer.Email);
-            if (result == "OK")
-            {
-                return Ok("Customer inserted successfully.");
-            }
-            return BadRequest(result);
-        }
+    return (
+        <form onSubmit={handleSubmit}>
+            <div>
+                <label>First Name:</label>
+                <input type="text" name="firstName" value={customer.firstName} onChange={handleChange} required />
+            </div>
+            <div>
+                <label>Last Name:</label>
+                <input type="text" name="lastName" value={customer.lastName} onChange={handleChange} required />
+            </div>
+            <div>
+                <label>Phone Number:</label>
+                <input type="text" name="phoneNumber" value={customer.phoneNumber} onChange={handleChange} required />
+            </div>
+            <div>
+                <label>Email:</label>
+                <input type="email" name="email" value={customer.email} onChange={handleChange} required />
+            </div>
+            <button type="submit">Insert Customer</button>
+        </form>
+    );
+};
 
-        [HttpPut("update")]
-        public IActionResult UpdateCustomer([FromBody] vmCustomer customer)
-        {
-            var result = _customerBusiness.UpdateCustomer(customer.CustomerID, customer.FirstName, customer.LastName, customer.PhoneNumber, customer.Email);
-            if (result == "OK")
-            {
-                return Ok("Customer updated successfully.");
-            }
-            return BadRequest(result);
-        }
-
-        [HttpDelete("delete/{id}")]
-        public IActionResult DeleteCustomer(int id)
-        {
-            var result = _customerBusiness.DeleteCustomer(id);
-            if (result == "OK")
-            {
-                return Ok("Customer deleted successfully.");
-            }
-            return BadRequest(result);
-        }
-
-        [HttpGet("all")]
-        public IActionResult GetAllCustomers()
-        {
-            DataSet customers = _customerBusiness.GetAllCustomers();
-            return Ok(customers);
-        }
-
-        [HttpGet("{id}")]
-        public IActionResult GetCustomerByID(int id)
-        {
-            DataSet customer = _customerBusiness.GetCustomerByID(id);
-            return Ok(customer);
-        }
-
-        [HttpGet("search/firstname/{firstName}")]
-        public IActionResult SearchCustomersByFirstName(string firstName)
-        {
-            List<vmCustomer> customers = _customerBusiness.SearchCustomersByFirstName(firstName);
-            return Ok(customers);
-        }
-
-        [HttpGet("search/lastname/{lastName}")]
-        public IActionResult SearchCustomersByLastName(string lastName)
-        {
-            List<vmCustomer> customers = _customerBusiness.SearchCustomersByLastName(lastName);
-            return Ok(customers);
-        }
-
-        [HttpGet("search/phonenumber/{phoneNumber}")]
-        public IActionResult SearchCustomersByPhoneNumber(string phoneNumber)
-        {
-            List<vmCustomer> customers = _customerBusiness.SearchCustomersByPhoneNumber(phoneNumber);
-            return Ok(customers);
-        }
-
-        [HttpGet("search/email/{email}")]
-        public IActionResult SearchCustomersByEmail(string email)
-        {
-            List<vmCustomer> customers = _customerBusiness.SearchCustomersByEmail(email);
-            return Ok(customers);
-        }
-    }
-}
+export default InsertCustomerForm;
