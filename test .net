@@ -12,60 +12,81 @@ namespace Customer.Business
 
         public string InsertCustomer(string firstName, string lastName, string phoneNumber, string email)
         {
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            try
             {
-                using (SqlCommand cmd = new SqlCommand("InsertCustomer", conn))
+                using (SqlConnection conn = new SqlConnection(connectionString))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@FirstName", firstName);
-                    cmd.Parameters.AddWithValue("@LastName", lastName);
-                    cmd.Parameters.AddWithValue("@PhoneNumber", phoneNumber);
-                    cmd.Parameters.AddWithValue("@Email", email);
+                    using (SqlCommand cmd = new SqlCommand("InsertCustomer", conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@FirstName", firstName);
+                        cmd.Parameters.AddWithValue("@LastName", lastName);
+                        cmd.Parameters.AddWithValue("@PhoneNumber", phoneNumber);
+                        cmd.Parameters.AddWithValue("@Email", email);
 
-                    conn.Open();
-                    cmd.ExecuteNonQuery();
-                    conn.Close();
+                        conn.Open();
+                        cmd.ExecuteNonQuery();
+                        conn.Close();
+                    }
                 }
+                return "OK";
             }
-            return "OK";
+            catch (Exception ex)
+            {
+                return $"Error: {ex.Message}";
+            }
         }
 
         public string UpdateCustomer(int customerId, string firstName, string lastName, string phoneNumber, string email)
         {
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            try
             {
-                using (SqlCommand cmd = new SqlCommand("UpdateCustomer", conn))
+                using (SqlConnection conn = new SqlConnection(connectionString))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@CustomerID", customerId);
-                    cmd.Parameters.AddWithValue("@FirstName", firstName);
-                    cmd.Parameters.AddWithValue("@LastName", lastName);
-                    cmd.Parameters.AddWithValue("@PhoneNumber", phoneNumber);
-                    cmd.Parameters.AddWithValue("@Email", email);
+                    using (SqlCommand cmd = new SqlCommand("UpdateCustomer", conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@CustomerID", customerId);
+                        cmd.Parameters.AddWithValue("@FirstName", firstName);
+                        cmd.Parameters.AddWithValue("@LastName", lastName);
+                        cmd.Parameters.AddWithValue("@PhoneNumber", phoneNumber);
+                        cmd.Parameters.AddWithValue("@Email", email);
 
-                    conn.Open();
-                    cmd.ExecuteNonQuery();
-                    conn.Close();
+                        conn.Open();
+                        cmd.ExecuteNonQuery();
+                        conn.Close();
+                    }
                 }
+                return "OK";
             }
-            return "OK";
+            catch (Exception ex)
+            {
+                return $"Error: {ex.Message}";
+            }
         }
 
         public string DeleteCustomer(int customerId)
         {
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            try
             {
-                using (SqlCommand cmd = new SqlCommand("DeleteCustomer", conn))
+                using (SqlConnection conn = new SqlConnection(connectionString))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@CustomerID", customerId);
+                    using (SqlCommand cmd = new SqlCommand("DeleteCustomer", conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@CustomerID", customerId);
 
-                    conn.Open();
-                    cmd.ExecuteNonQuery();
-                    conn.Close();
+                        conn.Open();
+                        cmd.ExecuteNonQuery();
+                        conn.Close();
+                    }
                 }
+                return "OK";
             }
-            return "OK";
+            catch (Exception ex)
+            {
+                return $"Error: {ex.Message}";
+            }
         }
 
         public DataSet GetAllCustomers()
@@ -119,35 +140,31 @@ namespace Customer.Business
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                using (SqlCommand cmd = new SqlCommand("SearchCustomersByFirstName", conn))
+                SqlDataAdapter adapter1 = new SqlDataAdapter();
+                adapter1.SelectCommand = new SqlCommand("SearchCustomersByFirstName", conn);
+                adapter1.SelectCommand.CommandType = CommandType.StoredProcedure;
+                adapter1.SelectCommand.Parameters.AddWithValue("@FirstName", firstName);
+
+                conn.Open();
+                DataSet dsResult = new DataSet();
+                adapter1.Fill(dsResult);
+
+                if (dsResult.Tables.Count > 0)
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@FirstName", firstName);
-
-                    conn.Open();
-                    using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+                    for (int i = 0; i < dsResult.Tables[0].Rows.Count; i++)
                     {
-                        DataSet dsResult = new DataSet();
-                        adapter.Fill(dsResult);
-
-                        if (dsResult.Tables.Count > 0)
+                        vmCustomer result = new vmCustomer
                         {
-                            for (int i = 0; i < dsResult.Tables[0].Rows.Count; i++)
-                            {
-                                vmCustomer result = new vmCustomer
-                                {
-                                    CustomerID = Convert.ToInt32(dsResult.Tables[0].Rows[i]["CustomerID"]),
-                                    FirstName = dsResult.Tables[0].Rows[i]["FirstName"].ToString(),
-                                    LastName = dsResult.Tables[0].Rows[i]["LastName"].ToString(),
-                                    PhoneNumber = dsResult.Tables[0].Rows[i]["PhoneNumber"].ToString(),
-                                    Email = dsResult.Tables[0].Rows[i]["Email"].ToString()
-                                };
-                                finalResult.Add(result);
-                            }
-                        }
+                            CustomerID = Convert.ToInt32(dsResult.Tables[0].Rows[i]["CustomerID"]),
+                            FirstName = dsResult.Tables[0].Rows[i]["FirstName"].ToString(),
+                            LastName = dsResult.Tables[0].Rows[i]["LastName"].ToString(),
+                            PhoneNumber = dsResult.Tables[0].Rows[i]["PhoneNumber"].ToString(),
+                            Email = dsResult.Tables[0].Rows[i]["Email"].ToString()
+                        };
+                        finalResult.Add(result);
                     }
-                    conn.Close();
                 }
+                conn.Close();
             }
 
             return finalResult;
@@ -159,35 +176,31 @@ namespace Customer.Business
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                using (SqlCommand cmd = new SqlCommand("SearchCustomersByLastName", conn))
+                SqlDataAdapter adapter1 = new SqlDataAdapter();
+                adapter1.SelectCommand = new SqlCommand("SearchCustomersByLastName", conn);
+                adapter1.SelectCommand.CommandType = CommandType.StoredProcedure;
+                adapter1.SelectCommand.Parameters.AddWithValue("@LastName", lastName);
+
+                conn.Open();
+                DataSet dsResult = new DataSet();
+                adapter1.Fill(dsResult);
+
+                if (dsResult.Tables.Count > 0)
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@LastName", lastName);
-
-                    conn.Open();
-                    using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+                    for (int i = 0; i < dsResult.Tables[0].Rows.Count; i++)
                     {
-                        DataSet dsResult = new DataSet();
-                        adapter.Fill(dsResult);
-
-                        if (dsResult.Tables.Count > 0)
+                        vmCustomer result = new vmCustomer
                         {
-                            for (int i = 0; i < dsResult.Tables[0].Rows.Count; i++)
-                            {
-                                vmCustomer result = new vmCustomer
-                                {
-                                    CustomerID = Convert.ToInt32(dsResult.Tables[0].Rows[i]["CustomerID"]),
-                                    FirstName = dsResult.Tables[0].Rows[i]["FirstName"].ToString(),
-                                    LastName = dsResult.Tables[0].Rows[i]["LastName"].ToString(),
-                                    PhoneNumber = dsResult.Tables[0].Rows[i]["PhoneNumber"].ToString(),
-                                    Email = dsResult.Tables[0].Rows[i]["Email"].ToString()
-                                };
-                                finalResult.Add(result);
-                            }
-                        }
+                            CustomerID = Convert.ToInt32(dsResult.Tables[0].Rows[i]["CustomerID"]),
+                            FirstName = dsResult.Tables[0].Rows[i]["FirstName"].ToString(),
+                            LastName = dsResult.Tables[0].Rows[i]["LastName"].ToString(),
+                            PhoneNumber = dsResult.Tables[0].Rows[i]["PhoneNumber"].ToString(),
+                            Email = dsResult.Tables[0].Rows[i]["Email"].ToString()
+                        };
+                        finalResult.Add(result);
                     }
-                    conn.Close();
                 }
+                conn.Close();
             }
 
             return finalResult;
@@ -199,35 +212,31 @@ namespace Customer.Business
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                using (SqlCommand cmd = new SqlCommand("SearchCustomersByPhoneNumber", conn))
+                SqlDataAdapter adapter1 = new SqlDataAdapter();
+                adapter1.SelectCommand = new SqlCommand("SearchCustomersByPhoneNumber", conn);
+                adapter1.SelectCommand.CommandType = CommandType.StoredProcedure;
+                adapter1.SelectCommand.Parameters.AddWithValue("@PhoneNumber", phoneNumber);
+
+                conn.Open();
+                DataSet dsResult = new DataSet();
+                adapter1.Fill(dsResult);
+
+                if (dsResult.Tables.Count > 0)
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@PhoneNumber", phoneNumber);
-
-                    conn.Open();
-                    using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+                    for (int i = 0; i < dsResult.Tables[0].Rows.Count; i++)
                     {
-                        DataSet dsResult = new DataSet();
-                        adapter.Fill(dsResult);
-
-                        if (dsResult.Tables.Count > 0)
+                        vmCustomer result = new vmCustomer
                         {
-                            for (int i = 0; i < dsResult.Tables[0].Rows.Count; i++)
-                            {
-                                vmCustomer result = new vmCustomer
-                                {
-                                    CustomerID = Convert.ToInt32(dsResult.Tables[0].Rows[i]["CustomerID"]),
-                                    FirstName = dsResult.Tables[0].Rows[i]["FirstName"].ToString(),
-                                    LastName = dsResult.Tables[0].Rows[i]["LastName"].ToString(),
-                                    PhoneNumber = dsResult.Tables[0].Rows[i]["PhoneNumber"].ToString(),
-                                    Email = dsResult.Tables[0].Rows[i]["Email"].ToString()
-                                };
-                                finalResult.Add(result);
-                            }
-                        }
+                            CustomerID = Convert.ToInt32(dsResult.Tables[0].Rows[i]["CustomerID"]),
+                            FirstName = dsResult.Tables[0].Rows[i]["FirstName"].ToString(),
+                            LastName = dsResult.Tables[0].Rows[i]["LastName"].ToString(),
+                            PhoneNumber = dsResult.Tables[0].Rows[i]["PhoneNumber"].ToString(),
+                            Email = dsResult.Tables[0].Rows[i]["Email"].ToString()
+                        };
+                        finalResult.Add(result);
                     }
-                    conn.Close();
                 }
+                conn.Close();
             }
 
             return finalResult;
@@ -239,35 +248,31 @@ namespace Customer.Business
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                using (SqlCommand cmd = new SqlCommand("SearchCustomersByEmail", conn))
+                SqlDataAdapter adapter1 = new SqlDataAdapter();
+                adapter1.SelectCommand = new SqlCommand("SearchCustomersByEmail", conn);
+                adapter1.SelectCommand.CommandType = CommandType.StoredProcedure;
+                adapter1.SelectCommand.Parameters.AddWithValue("@Email", email);
+
+                conn.Open();
+                DataSet dsResult = new DataSet();
+                adapter1.Fill(dsResult);
+
+                if (dsResult.Tables.Count > 0)
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@Email", email);
-
-                    conn.Open();
-                    using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+                    for (int i = 0; i < dsResult.Tables[0].Rows.Count; i++)
                     {
-                        DataSet dsResult = new DataSet();
-                        adapter.Fill(dsResult);
-
-                        if (dsResult.Tables.Count > 0)
+                        vmCustomer result = new vmCustomer
                         {
-                            for (int i = 0; i < dsResult.Tables[0].Rows.Count; i++)
-                            {
-                                vmCustomer result = new vmCustomer
-                                {
-                                    CustomerID = Convert.ToInt32(dsResult.Tables[0].Rows[i]["CustomerID"]),
-                                    FirstName = dsResult.Tables[0].Rows[i]["FirstName"].ToString(),
-                                    LastName = dsResult.Tables[0].Rows[i]["LastName"].ToString(),
-                                    PhoneNumber = dsResult.Tables[0].Rows[i]["PhoneNumber"].ToString(),
-                                    Email = dsResult.Tables[0].Rows[i]["Email"].ToString()
-                                };
-                                finalResult.Add(result);
-                            }
-                        }
+                            CustomerID = Convert.ToInt32(dsResult.Tables[0].Rows[i]["CustomerID"]),
+                            FirstName = dsResult.Tables[0].Rows[i]["FirstName"].ToString(),
+                            LastName = dsResult.Tables[0].Rows[i]["LastName"].ToString(),
+                            PhoneNumber = dsResult.Tables[0].Rows[i]["PhoneNumber"].ToString(),
+                            Email = dsResult.Tables[0].Rows[i]["Email"].ToString()
+                        };
+                        finalResult.Add(result);
                     }
-                    conn.Close();
                 }
+                conn.Close();
             }
 
             return finalResult;
